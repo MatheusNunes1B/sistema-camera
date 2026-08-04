@@ -23,7 +23,16 @@ const SupabasePhotos = (() => {
     return `${URL}/storage/v1/object/public/${BUCKET}/${fileName}`;
   }
 
-  return { upload };
+  async function remove(studentId) {
+    const response = await fetch(`${URL}/storage/v1/object/${BUCKET}/${studentId}.jpg`, {
+      method: 'DELETE',
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` }
+    });
+    // Uma foto que não chegou a ser enviada não deve impedir a exclusão local.
+    if (!response.ok && response.status !== 404) throw new Error('Não foi possível excluir a foto do Supabase.');
+  }
+
+  return { upload, remove };
 })();
 
 const SupabaseAccessLogs = (() => {

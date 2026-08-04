@@ -47,13 +47,9 @@ Use iluminação uniforme e deixe apenas uma pessoa diante da câmera para melho
 
 ## Supabase
 
-Abra o **SQL Editor** do seu projeto Supabase e execute [supabase/setup-storage.sql](supabase/setup-storage.sql). O script cria:
+O projeto utiliza o bucket `student-photos` para as fotos de cadastro e a tabela `access_logs` para o histórico de acessos. Essas estruturas e suas políticas devem estar configuradas no projeto Supabase antes de usar a sincronização remota.
 
-- o bucket público `student-photos`, usado para as fotos de cadastro;
-- a tabela `access_logs`, usada para o histórico de acessos;
-- as políticas necessárias para o protótipo funcionar com a chave `anon` no navegador.
-
-Cada acesso autorizado ou negado é salvo no `localStorage` e enviado para `access_logs`. Ao abrir a aplicação, os últimos 100 registros remotos são carregados. Ao limpar o histórico, a aplicação tenta apagar tanto os registros locais quanto os remotos.
+Cada acesso autorizado ou negado é salvo no `localStorage` e enviado para `access_logs`. Ao abrir a aplicação, os últimos 100 registros remotos são carregados. Ao limpar o histórico, a aplicação tenta apagar tanto os registros locais quanto os remotos. Ao excluir um aluno, a foto vinculada é removida do bucket `student-photos`; o histórico de acessos é preservado.
 
 Se o Supabase não estiver configurado ou estiver sem conexão, a demonstração continua usando somente o armazenamento local. As fotos são enviadas ao bucket quando ele está disponível; caso contrário, ficam armazenadas apenas no navegador.
 
@@ -68,7 +64,6 @@ js/camera.js               Webcam e tratamento de permissões
 js/faceRecognition.js      Modelos, detecção e comparação facial
 js/supabase.js             Upload de foto e histórico remoto
 js/app.js                  Interface, cadastro, catraca e histórico
-supabase/setup-storage.sql Bucket, tabela e políticas do Supabase
 ```
 
 ## Limitações e privacidade
