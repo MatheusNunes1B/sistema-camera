@@ -1,79 +1,113 @@
 # Pânico de Dados
 
-MVP educacional de uma catraca escolar virtual que utiliza a webcam e reconhecimento facial no navegador para simular o controle de entrada.
+> Controle de acesso escolar inteligente, criado para demonstração educacional pelo squad **Pânico de Dados**.
 
-## Funcionalidades
+O **Pânico de Dados** é um MVP de catraca escolar virtual que transforma a webcam do computador em um ponto de entrada. O sistema cadastra alunos, registra uma referência facial no navegador e simula a liberação ou o bloqueio de acesso em tempo real.
 
-- Cadastro, listagem e exclusão de alunos.
-- Captura de descriptor facial e foto de cadastro por webcam.
-- Identificação facial local de uma pessoa por vez.
-- Respostas de acesso autorizado, negado e alerta para múltiplos rostos.
-- Catraca visual com animação de abertura.
-- Dashboard com alunos cadastrados, acessos do dia, autorizações e negações.
-- Histórico salvo no navegador e sincronizado com o Supabase quando configurado.
-- Controles independentes para ativar e desligar a câmera na catraca e no cadastro.
+Nossa proposta é apresentar, de forma clara e visual, como tecnologias web podem apoiar a gestão de entrada em ambientes escolares — sempre com foco em prototipação, privacidade e uso responsável de dados.
+
+## O que construímos
+
+- Cadastro de alunos com nome, matrícula, turma e captura facial.
+- Identificação facial local usando a webcam do dispositivo.
+- Estados de acesso claros: aguardando, identificando, autorizado, negado e alerta de múltiplas pessoas.
+- Catraca virtual com animação de abertura e bloqueio.
+- Painel com indicadores de alunos cadastrados, acessos do dia, autorizações e negações.
+- Histórico de acessos com data, hora, aluno, turma e status.
+- Persistência local para manter a demonstração disponível após recarregar a página.
+- Integração opcional com Supabase para fotos de cadastro e histórico remoto.
+- Interface responsiva para desktop, notebook, tablet e celular.
+
+## Demonstração do fluxo
+
+```text
+Cadastro do aluno
+      ↓
+Captura de rosto pela webcam
+      ↓
+Descriptor facial salvo no navegador
+      ↓
+Pessoa se posiciona na catraca virtual
+      ↓
+Reconhecimento facial local
+      ↓
+Autorizado: catraca abre e acesso é registrado
+Negado: catraca permanece bloqueada e acesso é registrado
+```
 
 ## Tecnologias
 
-- HTML e JavaScript puro
-- Tailwind CSS via CDN
-- `navigator.mediaDevices.getUserMedia()`
-- `localStorage`
-- `@vladmandic/face-api` via CDN
-- Supabase Storage e REST API
+| Tecnologia | Uso no projeto |
+| --- | --- |
+| HTML + JavaScript puro | Interface e lógica da aplicação |
+| Tailwind CSS | Design responsivo e componentes visuais |
+| `getUserMedia()` | Permissão e acesso à webcam |
+| `@vladmandic/face-api` | Detecção e comparação facial no navegador |
+| `localStorage` | Cadastro e histórico local |
+| Supabase | Fotos de cadastro e histórico remoto opcional |
 
 ## Como executar
 
-O projeto precisa ser aberto por um servidor local seguro (`localhost` ou HTTPS), porque navegadores bloqueiam a webcam em arquivos abertos com `file://`.
-
-Uma opção é abrir a pasta no VS Code e usar a extensão **Live Server**. Outra é executar:
+Clone o repositório e abra a pasta em um servidor local. A webcam não funciona ao abrir o arquivo diretamente com `file://`.
 
 ```bash
+git clone https://github.com/MatheusNunes1B/sistema-camera.git
+cd sistema-camera
 npx serve .
 ```
 
-Abra o endereço informado, permita o uso da câmera quando solicitado e mantenha conexão com a internet na primeira carga dos modelos faciais.
+Como alternativa, abra a pasta no VS Code e use a extensão **Live Server**. Depois, abra o endereço exibido pelo servidor e permita o uso da câmera quando o navegador solicitar.
 
-## Como usar
+## Como apresentar o MVP
 
-1. Abra **Alunos** e clique em **+ CADASTRAR ALUNO**.
-2. Preencha nome, matrícula e turma.
-3. Clique em **ATIVAR CÂMERA**, posicione somente uma pessoa no enquadramento e escolha **CAPTURAR ROSTO**.
-4. Clique em **SALVAR ALUNO**.
-5. Na tela **Catraca**, clique em **ATIVAR CÂMERA** e apresente o rosto cadastrado.
-6. Consulte os eventos em **Histórico**.
+1. Acesse **Alunos** e selecione **+ CADASTRAR ALUNO**.
+2. Informe nome, matrícula e turma.
+3. Ative a câmera, mantenha apenas uma pessoa no enquadramento e capture o rosto.
+4. Salve o cadastro.
+5. Abra **Catraca**, ative a câmera e posicione o aluno cadastrado.
+6. Observe a autorização, a animação da catraca e o registro no histórico.
+7. Teste um rosto não cadastrado para demonstrar o bloqueio de acesso.
 
-Use iluminação uniforme e deixe apenas uma pessoa diante da câmera para melhorar a demonstração. A câmera pode ser desligada por seu botão correspondente; ela também é encerrada ao fechar o cadastro ou sair da página.
+Para melhores resultados, use um ambiente bem iluminado e mantenha o rosto centralizado na câmera.
 
-## Supabase
-
-O projeto utiliza o bucket `student-photos` para as fotos de cadastro e a tabela `access_logs` para o histórico de acessos. Essas estruturas e suas políticas devem estar configuradas no projeto Supabase antes de usar a sincronização remota.
-
-Cada acesso autorizado ou negado é salvo no `localStorage` e enviado para `access_logs`. Ao abrir a aplicação, os últimos 100 registros remotos são carregados. Ao limpar o histórico, a aplicação tenta apagar tanto os registros locais quanto os remotos. Ao excluir um aluno, a foto vinculada é removida do bucket `student-photos`; o histórico de acessos é preservado.
-
-Se o Supabase não estiver configurado ou estiver sem conexão, a demonstração continua usando somente o armazenamento local. As fotos são enviadas ao bucket quando ele está disponível; caso contrário, ficam armazenadas apenas no navegador.
-
-> As políticas fornecidas permitem leitura, inserção e remoção para a chave pública do projeto exclusivamente para demonstração. Em produção, use autenticação, políticas por usuário/escola e regras de retenção de dados.
-
-## Estrutura
+## Arquitetura do projeto
 
 ```text
-index.html                 Interface e layout Tailwind
-js/storage.js              Persistência local
-js/camera.js               Webcam e tratamento de permissões
+index.html                 Interface principal e navegação
+js/app.js                  Fluxos de cadastro, catraca, UI e histórico
+js/camera.js               Inicialização e encerramento seguro da webcam
 js/faceRecognition.js      Modelos, detecção e comparação facial
-js/supabase.js             Upload de foto e histórico remoto
-js/app.js                  Interface, cadastro, catraca e histórico
+js/storage.js              Persistência local no navegador
+js/supabase.js             Integração opcional com Supabase
 ```
 
-## Limitações e privacidade
+## Dados e integração com Supabase
 
-O reconhecimento varia conforme iluminação, câmera, ângulo e enquadramento. Os modelos faciais são baixados de um CDN na primeira utilização. O vídeo da webcam é processado localmente; o aplicativo não envia vídeo contínuo ao servidor. As fotos de cadastro e os registros só são enviados ao Supabase se a configuração descrita acima for executada.
+Por padrão, os dados ficam no `localStorage` do navegador. Isso permite que o projeto seja demonstrado sem backend, mas os cadastros permanecem apenas no dispositivo utilizado.
 
-Dados biométricos exigem proteção especial. Use informações fictícias em apresentações e não publique fotos, descriptors ou históricos reais em repositórios.
+Para configurar o Supabase, abra o **SQL Editor** do projeto, copie e execute [supabase/setup-storage.sql](supabase/setup-storage.sql). O script cria o bucket `student-photos`, a tabela `access_logs` e as permissões de demonstração utilizadas pela aplicação.
+
+Quando configurado, o Supabase pode armazenar as fotos no bucket `student-photos` e os acessos na tabela `access_logs`. A aplicação continua funcionando localmente se o Supabase estiver indisponível.
+
+> As regras atuais de Supabase foram pensadas para a demonstração. Em uma versão real, seriam indispensáveis autenticação, controle de acesso por perfil, regras de retenção e auditoria.
+
+## Privacidade e uso responsável
+
+Reconhecimento facial envolve dados biométricos e precisa de cuidados especiais. Neste MVP:
+
+- a análise da webcam ocorre localmente no navegador;
+- o vídeo contínuo não é enviado para um servidor pela aplicação;
+- os dados locais permanecem no navegador utilizado;
+- recomendamos utilizar informações e imagens fictícias em apresentações.
+
+## Limitações conhecidas
+
+Este é um protótipo educacional. A precisão pode variar conforme iluminação, qualidade da câmera, posição do rosto e semelhança entre pessoas. O sistema não possui mecanismos de autenticação, prova de vida, auditoria avançada ou conformidade regulatória completa.
 
 ## Aviso
 
-Este projeto é um MVP/protótipo educacional.
+Este projeto não deve ser usado como sistema real de controle de acesso sem validações adicionais de segurança, privacidade, precisão de reconhecimento facial, proteção de dados biométricos e conformidade legal.
 
-Não deve ser utilizado como sistema real de controle de acesso sem validações adicionais de segurança, privacidade, precisão do reconhecimento facial, tratamento de dados biométricos e conformidade legal.
+---
+
+Desenvolvido pelo squad **Pânico de Dados**.
