@@ -1,0 +1,1 @@
+const Store = { students: () => JSON.parse(localStorage.getItem('pd_students') || '[]'), logs: () => JSON.parse(localStorage.getItem('pd_logs') || '[]'), saveStudents(v) { localStorage.setItem('pd_students', JSON.stringify(v)); }, saveLogs(v) { localStorage.setItem('pd_logs', JSON.stringify(v)); } };

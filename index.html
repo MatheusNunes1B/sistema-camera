@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pânico de Dados | Controle de Acesso Escolar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { ink: '#0b1736', electric: '#2563eb' }, boxShadow: { panel: '0 18px 45px rgba(11,23,54,.10)' } } } }
+  </script>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.15/dist/face-api.min.js"></script>
+  <style>
+    .view { display:none }.view.active { display:block }.video-frame { aspect-ratio:16/10 }.video-frame video,.video-frame canvas { width:100%;height:100%;object-fit:cover;position:absolute;inset:0 }.video-frame video { transform:scaleX(-1) }.gate-arm { transform-origin:center; transition:transform .7s cubic-bezier(.2,.8,.2,1) }.gate-arm.opposite { transform:rotate(180deg) }.gate.open .gate-arm { transform:rotate(-35deg) }.gate.open .gate-arm.opposite { transform:rotate(145deg) }.pulse { animation:pulse 1.5s infinite } @keyframes pulse { 50% { opacity:.5 } }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-100 text-slate-800">
+  <div class="min-h-screen lg:flex">
+    <aside class="bg-ink p-5 text-white lg:w-72 lg:fixed lg:inset-y-0">
+      <div class="flex items-center gap-3"><div class="grid h-11 w-11 place-items-center rounded-xl bg-blue-500 font-black">PD</div><div><h1 class="font-bold tracking-wide">PÂNICO DE DADOS</h1><p class="text-xs text-blue-200">Controle de Acesso Escolar</p></div></div>
+      <nav class="mt-8 flex gap-2 overflow-x-auto lg:block lg:space-y-2" aria-label="Navegação principal">
+        <button class="nav-btn whitespace-nowrap rounded-xl bg-white/15 px-4 py-3 text-left text-sm font-medium lg:block lg:w-full" data-view="turnstile">⌂ Catraca</button>
+        <button class="nav-btn whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium hover:bg-white/10 lg:block lg:w-full" data-view="students">♟ Alunos</button>
+        <button class="nav-btn whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium hover:bg-white/10 lg:block lg:w-full" data-view="history">▤ Histórico</button>
+        <button class="nav-btn whitespace-nowrap rounded-xl px-4 py-3 text-left text-sm font-medium hover:bg-white/10 lg:block lg:w-full" data-view="settings">⚙ Configurações</button>
+      </nav>
+      <p class="mt-8 text-xs leading-relaxed text-blue-100/70">Protótipo demonstrativo. Dados armazenados localmente neste dispositivo.</p>
+    </aside>
+    <main class="p-4 sm:p-8 lg:ml-72 lg:w-[calc(100%-18rem)]">
+      <header class="mb-7 flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-[.2em] text-blue-600">Sistema de entrada</p><h2 id="page-title" class="text-2xl font-bold text-ink">Catraca</h2></div><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">● SISTEMA ONLINE</span></header>
+
+      <section id="turnstile" class="view active space-y-6">
+        <div id="metrics" class="grid grid-cols-2 gap-3 sm:grid-cols-4"></div>
+        <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_330px]">
+          <article class="rounded-3xl bg-white p-5 shadow-panel sm:p-7"><div class="mb-4 flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-widest text-blue-600">Controle de acesso</p><h3 class="text-lg font-bold text-ink">Identificação facial</h3></div><button id="turn-camera" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white hover:bg-blue-700">ATIVAR CÂMERA</button></div>
+            <div class="video-frame relative overflow-hidden rounded-2xl bg-slate-900"><video id="turn-video" autoplay muted playsinline></video><canvas id="turn-canvas"></canvas><div id="video-placeholder" class="absolute inset-0 grid place-items-center text-center text-slate-300"><div><div class="mb-2 text-4xl">◉</div><p class="font-semibold">Câmera desligada</p><p class="text-sm text-slate-400">Ative a câmera para iniciar a identificação.</p></div></div></div>
+            <div id="access-message" class="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-center"><p class="text-xs font-bold tracking-widest text-blue-700">AGUARDANDO</p><p class="mt-1 text-sm text-slate-600">Posicione seu rosto diante da câmera</p></div>
+          </article>
+          <aside class="space-y-5"><article class="rounded-3xl bg-ink p-6 text-center text-white shadow-panel"><p class="text-xs font-bold tracking-widest text-blue-200">STATUS DA CATRACA</p><div id="gate" class="gate mx-auto my-7 h-28 w-52"><div class="relative h-full"><i class="absolute left-1/2 top-0 h-full w-3 -translate-x-1/2 rounded bg-slate-300"></i><i class="gate-arm absolute left-1/2 top-1/2 h-3 w-24 rounded bg-blue-400"></i><i class="gate-arm opposite absolute left-1/2 top-1/2 h-3 w-24 rounded bg-blue-400"></i><b class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-slate-200 bg-blue-500"></b></div></div><p id="gate-label" class="font-bold text-blue-200">CATRACA FECHADA</p></article><article class="rounded-3xl bg-white p-5 shadow-panel"><p class="text-xs font-bold uppercase tracking-widest text-slate-500">Último acesso</p><p id="last-access" class="mt-2 text-sm text-slate-600">Nenhum acesso registrado hoje.</p></article></aside>
+        </div>
+      </section>
+
+      <section id="students" class="view space-y-6"><div class="flex flex-wrap items-center justify-between gap-3"><p class="text-slate-600">Cadastre um aluno e capture seu descriptor facial.</p><button id="open-register" class="rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white">+ CADASTRAR ALUNO</button></div><div id="student-list" class="grid gap-4 md:grid-cols-2 xl:grid-cols-3"></div></section>
+      <section id="history" class="view"><div class="mb-5 flex items-center justify-between"><p class="text-slate-600">Registros salvos neste dispositivo.</p><button id="clear-history" class="rounded-xl border border-red-200 px-4 py-2 text-sm font-bold text-red-600">LIMPAR HISTÓRICO</button></div><div class="overflow-x-auto rounded-2xl bg-white shadow-panel"><table class="w-full min-w-[620px] text-left text-sm"><thead class="border-b bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="p-4">Hora</th><th>Nome</th><th>Turma</th><th>Status</th></tr></thead><tbody id="history-list"></tbody></table></div></section>
+      <section id="settings" class="view max-w-2xl rounded-3xl bg-white p-7 shadow-panel"><h3 class="text-lg font-bold text-ink">Configurações e privacidade</h3><p class="mt-3 leading-relaxed text-slate-600">O vídeo é processado localmente pelo navegador. Somente dados de cadastro, descriptors faciais e histórico ficam no armazenamento deste dispositivo.</p><p class="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-800">Use apenas dados fictícios para demonstrações.</p></section>
+    </main>
+  </div>
+  <dialog id="register-dialog" class="w-[min(94vw,760px)] rounded-3xl p-0 backdrop:bg-slate-950/60"><form id="student-form" class="bg-white p-5 sm:p-7"><div class="mb-5 flex justify-between"><div><p class="text-xs font-bold tracking-widest text-blue-600">NOVO CADASTRO</p><h3 class="text-xl font-bold text-ink">Cadastrar aluno</h3></div><button type="button" class="close-dialog text-2xl text-slate-400">×</button></div><div class="grid gap-4 sm:grid-cols-3"><label class="text-sm font-medium sm:col-span-3">Nome completo<input required name="name" class="mt-1 w-full rounded-xl border border-slate-200 p-3" placeholder="João da Silva" /></label><label class="text-sm font-medium">Matrícula<input required name="registration" class="mt-1 w-full rounded-xl border border-slate-200 p-3" placeholder="202600123" /></label><label class="text-sm font-medium sm:col-span-2">Turma<input required name="class" class="mt-1 w-full rounded-xl border border-slate-200 p-3" placeholder="9º Ano A" /></label></div><div class="mt-5"><div class="mb-3 flex items-center justify-between gap-3"><p class="text-sm font-medium text-slate-700">Câmera de cadastro</p><button type="button" id="register-camera" class="rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white">ATIVAR CÂMERA</button></div><div class="video-frame relative overflow-hidden rounded-2xl bg-slate-900"><video id="register-video" autoplay muted playsinline></video><div id="register-placeholder" class="absolute inset-0 grid place-items-center text-center text-slate-300"><p>Ative a câmera para capturar o rosto.</p></div></div><p id="capture-status" class="mt-2 text-sm text-slate-500">Nenhum rosto capturado.</p><button type="button" id="capture-face" class="mt-3 rounded-xl border border-blue-200 px-4 py-2 text-sm font-bold text-blue-700">CAPTURAR ROSTO</button></div><div class="mt-6 flex justify-end gap-3"><button type="button" class="close-dialog rounded-xl px-4 py-3 font-bold text-slate-500">Cancelar</button><button class="rounded-xl bg-blue-600 px-5 py-3 font-bold text-white">SALVAR ALUNO</button></div></form></dialog>
+  <script src="js/storage.js"></script><script src="js/camera.js"></script><script src="js/faceRecognition.js"></script><script src="js/supabase.js"></script><script src="js/app.js"></script>
+</body>
+</html>
